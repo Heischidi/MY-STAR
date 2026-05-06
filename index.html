@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A romantic birthday experience made with love, just for you." />
+  <title>Happy Birthday, My Love ❤️</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&family=Dancing+Script:wght@400;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- ==================== LOADING SCREEN ==================== -->
+  <div id="loading-screen">
+    <div class="loader-content">
+      <div class="loader-heart">❤️</div>
+      <p class="loader-msg">Preparing something special for you…</p>
+      <div class="loader-dots">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MUSIC TOGGLE ==================== -->
+  <button id="music-toggle" title="Toggle music" aria-label="Toggle background music">
+    🎵
+  </button>
+  <!-- Hidden audio element; replace src with a real audio URL or local file -->
+  <audio id="bg-music" loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg" />
+  </audio>
+
+  <!-- ==================== NAV DOTS ==================== -->
+  <nav id="section-nav" aria-label="Section navigation">
+    <div class="nav-dot active" data-section="0" title="Home"></div>
+    <div class="nav-dot" data-section="1" title="Our Story"></div>
+    <div class="nav-dot" data-section="2" title="Why I Love You"></div>
+    <div class="nav-dot" data-section="3" title="Open When Letters"></div>
+    <div class="nav-dot" data-section="4" title="Memories"></div>
+    <div class="nav-dot" data-section="5" title="Surprise"></div>
+  </nav>
+
+  <!-- ==================== SECTION 1: LANDING ==================== -->
+  <section id="landing" class="section active-section">
+    <!-- Floating hearts background -->
+    <div class="floating-hearts" aria-hidden="true" id="floating-hearts"></div>
+
+    <div class="landing-content">
+      <div class="landing-badge">🎂 Today Is Your Day 🎂</div>
+      <h1 class="landing-title">
+        Happy Birthday,<br />
+        <span class="cursive-name">My Love</span> ❤️
+      </h1>
+      <p class="landing-sub">
+        Every moment with you is a gift I never want to return.
+      </p>
+      <button id="begin-btn" class="glow-btn">
+        <span>Tap to Begin</span>
+        <div class="btn-ripple"></div>
+      </button>
+    </div>
+
+    <div class="scroll-indicator" aria-hidden="true">
+      <div class="scroll-arrow"></div>
+    </div>
+  </section>
+
+  <!-- ==================== SECTION 2: OUR STORY TIMELINE ==================== -->
+  <section id="timeline-section" class="section">
+    <div class="section-header">
+      <div class="section-tag">Chapter One</div>
+      <h2>Our Story 💕</h2>
+      <p class="section-sub">Every chapter of us is my favourite</p>
+    </div>
+
+    <div class="timeline" id="timeline">
+
+      <div class="timeline-item" data-aos="fade-right">
+        <div class="timeline-dot">💫</div>
+        <div class="timeline-card">
+          <div class="timeline-img-wrap">
+            <img src="images/memory1.png" alt="The Day We Met" class="timeline-img" />
+            <div class="timeline-img-overlay"></div>
+          </div>
+          <div class="timeline-text">
+            <span class="timeline-date">The Beginning</span>
+            <h3>The Day We Met</h3>
+            <p>Omo, i still remeber it.... you were a complete bitch for no reason. yh.. u didnt like me .</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-item right" data-aos="fade-left">
+        <div class="timeline-dot">☕</div>
+        <div class="timeline-card">
+          <div class="timeline-img-wrap">
+            <img src="images/memory2.png" alt="Our First Date" class="timeline-img" />
+            <div class="timeline-img-overlay"></div>
+          </div>
+          <div class="timeline-text">
+            <span class="timeline-date">The Spark</span>
+            <h3>Our First Date</h3>
+            <p>okkkk i think our first actual date was akara cafe.... nice place type shit.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-item" data-aos="fade-right">
+        <div class="timeline-dot">🌊</div>
+        <div class="timeline-card">
+          <div class="timeline-img-wrap">
+            <img src="images/memory3.png" alt="Our Beach Day" class="timeline-img" />
+            <div class="timeline-img-overlay"></div>
+          </div>
+          <div class="timeline-text">
+            <span class="timeline-date">Summer Magic</span>
+            <h3>Our first praise concert</h3>
+            <p>A lot of noise but key prayers trust it was fire .</p>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="timeline-item" data-aos="fade-right">
+        <div class="timeline-dot">🏠</div>
+        <div class="timeline-card">
+          <div class="timeline-img-wrap">
+            <img src="images/memory5.png" alt="Our Cozy Evenings" class="timeline-img" />
+            <div class="timeline-img-overlay"></div>
+          </div>
+          <div class="timeline-text">
+            <span class="timeline-date">Home Is You</span>
+            <h3>Our Cozy Evenings</h3>
+            <p>YHHHH. NOW I HAVE A LOT TO SAY ON THIS ONE. We had just gotten back. cant remember where. but i do infact
+              remember the convo we had. A realization thatll stay with me forever</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-item right" data-aos="fade-left">
+        <div class="timeline-dot">❤️</div>
+        <div class="timeline-card no-img">
+          <div class="timeline-text">
+            <span class="timeline-date">Right Now</span>
+            <h3>Every Day With You</h3>
+            <p>And here we are. Every day I fall a little more in love with you — with your kindness, your spirit, your
+              beautiful soul. This isn't just a chapter in our story. It's our whole universe.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== SECTION 3: REASONS I LOVE YOU ==================== -->
+  <section id="love-section" class="section">
+    <div class="section-header">
+      <div class="section-tag">From My Heart</div>
+      <h2>Why I Love You 💖</h2>
+      <p class="section-sub">Every reason is its own universe</p>
+    </div>
+
+    <div class="love-container">
+      <div class="love-card-display" id="love-display">
+        <div class="love-quote-icon">❝</div>
+        <p id="love-message" class="love-message-text">
+          <!-- Message appears here via JS -->
+        </p>
+        <div class="love-counter">
+          <span id="love-counter-num">1</span> / 20
+        </div>
+      </div>
+      <button id="love-btn" class="heart-btn">
+        <span id="love-btn-text">Tap to see why I love you</span>
+        <span class="btn-heart">💗</span>
+      </button>
+      <div class="love-hearts-bar" id="love-hearts-bar"></div>
+    </div>
+  </section>
+
+  <!-- ==================== SECTION 4: OPEN WHEN LETTERS ==================== -->
+  <section id="letters-section" class="section">
+    <div class="section-header">
+      <div class="section-tag">Written With Love</div>
+      <h2>Open When… 💌</h2>
+      <p class="section-sub">These words are always here for you</p>
+    </div>
+
+    <div class="letters-grid">
+
+      <button class="letter-card" id="letter-sad" onclick="openLetter('sad')">
+        <div class="letter-icon">😢</div>
+        <div class="letter-label">Open when<br /><strong>you're sad</strong></div>
+        <div class="letter-wax">💌</div>
+      </button>
+
+      <button class="letter-card" id="letter-miss" onclick="openLetter('miss')">
+        <div class="letter-icon">🌙</div>
+        <div class="letter-label">Open when<br /><strong>you miss me</strong></div>
+        <div class="letter-wax">💌</div>
+      </button>
+
+      <button class="letter-card" id="letter-sleep" onclick="openLetter('sleep')">
+        <div class="letter-icon">🌟</div>
+        <div class="letter-label">Open when<br /><strong>you can't sleep</strong></div>
+        <div class="letter-wax">💌</div>
+      </button>
+
+      <button class="letter-card" id="letter-angry" onclick="openLetter('angry')">
+        <div class="letter-icon">😤</div>
+        <div class="letter-label">Open when<br /><strong>you're angry</strong></div>
+        <div class="letter-wax">💌</div>
+      </button>
+
+      <button class="letter-card" id="letter-doubt" onclick="openLetter('doubt')">
+        <div class="letter-icon">🤍</div>
+        <div class="letter-label">Open when<br /><strong>you need strength</strong></div>
+        <div class="letter-wax">💌</div>
+      </button>
+
+      <button class="letter-card" id="letter-happy" onclick="openLetter('happy')">
+        <div class="letter-icon">🌸</div>
+        <div class="letter-label">Open when<br /><strong>you're happy</strong></div>
+        <div class="letter-wax">💌</div>
+      </button>
+
+    </div>
+  </section>
+
+  <!-- ==================== SECTION 5: MEMORY GALLERY ==================== -->
+  <section id="gallery-section" class="section">
+    <div class="section-header">
+      <div class="section-tag">Our World</div>
+      <h2>Memory Gallery 📸</h2>
+      <p class="section-sub">Moments I never want to forget</p>
+    </div>
+
+    <div class="gallery-grid" id="gallery-grid">
+      <div class="gallery-item" onclick="openGallery(0)">
+        <img src="images/memory1.png" alt="The Day We Met" />
+        <div class="gallery-caption">The Day We Met ✨</div>
+        <div class="gallery-overlay"><span>View 🔍</span></div>
+      </div>
+      <div class="gallery-item" onclick="openGallery(1)">
+        <img src="images/memory2.png" alt="Our First Date" />
+        <div class="gallery-caption">Our First Date ☕</div>
+        <div class="gallery-overlay"><span>View 🔍</span></div>
+      </div>
+      <div class="gallery-item" onclick="openGallery(2)">
+        <img src="images/memory3.png" alt="Beach Day" />
+        <div class="gallery-caption">Our first praise concert 🌊</div>
+        <div class="gallery-overlay"><span>View 🔍</span></div>
+      </div>
+
+
+      <div class="gallery-item" onclick="openGallery(4)">
+        <img src="images/memory5.png" alt="Cozy Evenings" />
+        <div class="gallery-caption">Cozy Evenings 🏠</div>
+        <div class="gallery-overlay"><span>View 🔍</span></div>
+      </div>
+      <div class="gallery-item gallery-item--add">
+        <div class="gallery-add-icon">📷</div>
+        <p>Add Your Photo</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== SECTION 6: FINAL SURPRISE ==================== -->
+  <section id="surprise-section" class="section">
+    <div class="section-header">
+      <div class="section-tag">The Grand Finale</div>
+      <h2>One Last Thing… 🎁</h2>
+      <p class="section-sub">I saved the best for last</p>
+    </div>
+
+    <div class="surprise-container">
+      <div class="surprise-gift-wrap" id="surprise-gift-wrap">
+        <div class="gift-box">🎁</div>
+        <p class="gift-hint">Something magical is inside…</p>
+      </div>
+
+      <button id="surprise-btn" class="surprise-btn">
+        Click for Your Surprise 🎁
+      </button>
+
+      <div class="surprise-reveal" id="surprise-reveal">
+        <div class="surprise-message">
+          <div class="surprise-big-heart">❤️</div>
+          <h2 class="surprise-title">I Love You Forever</h2>
+          <p class="surprise-body">
+            No words will ever fully capture what you mean to me. You are my calm in every storm, my sunshine on cloudy
+            days, and the reason I believe in beautiful things. On this birthday and every birthday to come — I choose
+            you, completely and endlessly. Happy Birthday, my love. 🥂
+          </p>
+          <div class="surprise-stars">
+            <span>⭐</span><span>💖</span><span>⭐</span><span>💖</span><span>⭐</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confetti canvas -->
+    <canvas id="confetti-canvas" aria-hidden="true"></canvas>
+  </section>
+
+  <!-- ==================== LETTER MODAL ==================== -->
+  <div id="letter-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-backdrop" onclick="closeLetter()"></div>
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeLetter()" aria-label="Close letter">✕</button>
+      <div class="modal-envelope">💌</div>
+      <h3 id="modal-title" class="modal-title"></h3>
+      <div id="modal-body" class="modal-body"></div>
+      <button class="modal-done-btn" onclick="closeLetter()">Close 💕</button>
+    </div>
+  </div>
+
+  <!-- ==================== GALLERY LIGHTBOX ==================== -->
+  <div id="gallery-modal" class="modal" role="dialog" aria-modal="true">
+    <div class="modal-backdrop" onclick="closeGallery()"></div>
+    <div class="lightbox">
+      <button class="modal-close" onclick="closeGallery()" aria-label="Close gallery">✕</button>
+      <img id="lightbox-img" src="" alt="" />
+      <p id="lightbox-caption" class="lightbox-caption"></p>
+      <div class="lightbox-nav">
+        <button onclick="prevGallery()" aria-label="Previous">‹</button>
+        <button onclick="nextGallery()" aria-label="Next">›</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>

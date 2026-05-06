@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel — Birthday App 🛠️</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@300;400;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet" />
+  <style>
+    /* ---- Reset & Variables ---- */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --pink: #ff69b4;
+      --plum: #dda0dd;
+      --light-pink: #fff0f5;
+      --bg: #1a1a2e;
+      --bg2: #16213e;
+      --card: #0f3460;
+      --accent: #e94560;
+      --text: #eee;
+      --sub: #aaa;
+      --success: #4CAF50;
+      --warning: #ff9800;
+      --radius: 14px;
+    }
+    body { font-family: 'Lato', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* ---- Header ---- */
+    header {
+      background: linear-gradient(135deg, #0f3460, #16213e);
+      padding: 20px 30px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .admin-logo { font-family: 'Dancing Script', cursive; font-size: 1.8rem; color: var(--pink); }
+    .admin-logo span { font-size: 1rem; color: var(--sub); font-family: 'Lato'; font-weight: 300; margin-left: 8px; }
+    .header-actions { display: flex; gap: 12px; align-items: center; }
+    .btn { padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-size: 0.9rem; font-weight: 700; transition: all 0.2s ease; font-family: 'Lato'; }
+    .btn-primary { background: var(--pink); color: white; }
+    .btn-primary:hover { background: #e05a9d; transform: translateY(-2px); }
+    .btn-danger { background: #c0392b; color: white; }
+    .btn-danger:hover { background: #922b21; }
+    .btn-ghost { background: transparent; color: var(--text); border: 1px solid rgba(255,255,255,0.2); }
+    .btn-ghost:hover { background: rgba(255,255,255,0.1); }
+
+    /* ---- Layout ---- */
+    main { max-width: 1100px; margin: 0 auto; padding: 30px 20px 80px; }
+    .page-title { font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 5px; }
+    .page-sub { color: var(--sub); margin-bottom: 30px; font-size: 0.95rem; }
+
+    /* ---- Tabs ---- */
+    .tabs { display: flex; gap: 5px; margin-bottom: 30px; background: var(--bg2); padding: 6px; border-radius: 12px; width: fit-content; }
+    .tab-btn { padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; background: none; color: var(--sub); font-size: 0.95rem; font-weight: 700; transition: all 0.2s ease; font-family: 'Lato'; }
+    .tab-btn.active { background: var(--pink); color: white; }
+
+    /* ---- Section ---- */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .section-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--pink); margin-bottom: 15px; font-weight: 700; }
+
+    /* ---- Timeline Upload Slots ---- */
+    .timeline-slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+    .slot-card {
+      background: var(--bg2); border-radius: var(--radius); overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08); transition: border-color 0.3s ease;
+    }
+    .slot-card:hover { border-color: var(--pink); }
+    .slot-preview {
+      width: 100%; height: 180px; background: linear-gradient(135deg,#0f3460,#1a1a2e);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      position: relative; overflow: hidden; cursor: pointer;
+    }
+    .slot-preview img, .slot-preview video {
+      width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;
+    }
+    .slot-placeholder { font-size: 2.5rem; margin-bottom: 8px; opacity: 0.4; }
+    .slot-placeholder-text { font-size: 0.8rem; color: var(--sub); opacity: 0.7; }
+    .slot-overlay {
+      position: absolute; inset: 0; background: rgba(233,69,96,0.7);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.3s ease;
+    }
+    .slot-preview:hover .slot-overlay { opacity: 1; }
+    .slot-overlay span { color: white; font-weight: 700; font-size: 0.9rem; }
+    .slot-info { padding: 15px; }
+    .slot-name { font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+    .slot-desc { font-size: 0.8rem; color: var(--sub); margin-bottom: 10px; }
+    .slot-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .slot-actions .btn { padding: 7px 14px; font-size: 0.82rem; }
+    .file-status { font-size: 0.78rem; color: var(--success); margin-top: 6px; min-height: 18px; }
+    .file-status.warn { color: var(--warning); }
+    input[type="file"] { display: none; }
+
+    /* ---- Gallery Upload Panel ---- */
+    .drop-zone {
+      border: 2px dashed rgba(255,105,180,0.4); border-radius: var(--radius);
+      padding: 50px 20px; text-align: center; cursor: pointer;
+      transition: all 0.3s ease; margin-bottom: 30px;
+    }
+    .drop-zone:hover, .drop-zone.drag-over { border-color: var(--pink); background: rgba(255,105,180,0.05); }
+    .drop-icon { font-size: 3rem; margin-bottom: 15px; }
+    .drop-text { font-size: 1.1rem; color: var(--text); margin-bottom: 5px; }
+    .drop-sub { font-size: 0.85rem; color: var(--sub); }
+
+    /* ---- Gallery Preview Grid ---- */
+    .gallery-preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
+    .gp-item { background: var(--bg2); border-radius: 10px; overflow: hidden; position: relative; }
+    .gp-item img, .gp-item video { width: 100%; height: 130px; object-fit: cover; display: block; }
+    .gp-item-info { padding: 8px; }
+    .gp-caption-input {
+      width: 100%; background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.2);
+      color: var(--text); font-size: 0.85rem; padding: 4px 0; font-family: 'Lato';
+      outline: none; transition: border-color 0.3s ease;
+    }
+    .gp-caption-input:focus { border-color: var(--pink); }
+    .gp-caption-input::placeholder { color: var(--sub); }
+    .gp-remove {
+      position: absolute; top: 5px; right: 5px; background: rgba(192,57,43,0.9);
+      border: none; color: white; border-radius: 50%; width: 24px; height: 24px;
+      font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .gp-remove:hover { background: #922b21; }
+    .gp-type-badge {
+      position: absolute; top: 5px; left: 5px; background: rgba(0,0,0,0.6);
+      color: white; font-size: 0.65rem; padding: 2px 7px; border-radius: 10px; font-weight: 700;
+    }
+
+    /* ---- Save Bar ---- */
+    .save-bar {
+      position: fixed; bottom: 0; left: 0; width: 100%;
+      background: var(--bg2); border-top: 1px solid rgba(255,255,255,0.1);
+      padding: 15px 30px; display: flex; align-items: center; justify-content: space-between;
+      gap: 15px; z-index: 200;
+    }
+    .save-status { font-size: 0.9rem; color: var(--sub); }
+    .save-status.saved { color: var(--success); }
+
+    /* ---- Storage Bar ---- */
+    .storage-info { font-size: 0.82rem; color: var(--sub); margin-bottom: 20px; }
+    .storage-bar-wrap { background: rgba(255,255,255,0.1); border-radius: 4px; height: 6px; margin-top: 6px; overflow: hidden; }
+    .storage-bar-fill { height: 100%; background: var(--pink); border-radius: 4px; transition: width 0.5s ease; }
+
+    /* ---- Toast ---- */
+    .toast {
+      position: fixed; top: 20px; right: 20px; background: #333; color: white;
+      padding: 12px 24px; border-radius: 10px; font-size: 0.9rem; z-index: 999;
+      transform: translateY(-60px); opacity: 0; transition: all 0.4s ease;
+      border-left: 4px solid var(--success);
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.error { border-left-color: var(--accent); }
+
+    /* ---- Deploy Tab ---- */
+    .deploy-info { background: rgba(255,255,255,0.05); border-radius: 10px; padding: 15px 20px;
+      margin-bottom: 25px; font-size: 0.9rem; line-height: 1.7; color: var(--sub); border-left: 3px solid var(--pink); }
+    .deploy-info strong { color: var(--text); }
+    code { background: rgba(255,255,255,0.1); padding: 2px 7px; border-radius: 4px; font-size: 0.85rem; color: var(--pink); }
+    .deploy-steps { display: flex; flex-direction: column; gap: 12px; margin-bottom: 10px; }
+    .deploy-step { display: flex; gap: 15px; align-items: flex-start; background: var(--bg2);
+      border-radius: 10px; padding: 15px; }
+    .step-num { width: 32px; height: 32px; background: var(--pink); border-radius: 50%; display: flex;
+      align-items: center; justify-content: center; font-weight: 900; font-size: 0.95rem; flex-shrink: 0; }
+    .step-body { font-size: 0.9rem; line-height: 1.6; color: var(--sub); }
+    .step-body strong { color: var(--text); }
+    .deploy-slot-row, .deploy-gal-row { display: flex; gap: 10px; align-items: center;
+      background: var(--bg2); border-radius: 8px; padding: 10px 15px; margin-bottom: 8px; flex-wrap: wrap; }
+    .deploy-slot-label { font-size: 0.85rem; font-weight: 700; color: var(--text); min-width: 180px; }
+    .deploy-path-input { flex: 1; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px; color: var(--text); padding: 7px 12px; font-size: 0.85rem; font-family: monospace;
+      outline: none; min-width: 180px; }
+    .deploy-path-input:focus { border-color: var(--pink); }
+    .deploy-type-select { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px; color: var(--text); padding: 7px 10px; font-size: 0.85rem; cursor: pointer; }
+    .deploy-caption-input { flex: 1; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px; color: var(--text); padding: 7px 12px; font-size: 0.85rem; font-family: 'Lato';
+      outline: none; min-width: 140px; }
+    .deploy-caption-input:focus { border-color: var(--pink); }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 600px) {
+      header { flex-direction: column; gap: 15px; align-items: flex-start; }
+      .timeline-slots { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="admin-logo">Birthday App <span>Admin Panel 🛠️</span></div>
+  <div class="header-actions">
+    <a href="index.html" class="btn btn-ghost">← View App</a>
+    <button class="btn btn-danger" onclick="clearAll()">🗑️ Clear All</button>
+  </div>
+</header>
+
+<main>
+  <div class="page-title">Media Manager</div>
+  <p class="page-sub">Upload images & videos for the timeline and memory gallery. All files are saved in your browser's local storage.</p>
+
+  <div class="storage-info" id="storage-info">
+    Calculating storage usage…
+    <div class="storage-bar-wrap"><div class="storage-bar-fill" id="storage-bar" style="width:0%"></div></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('timeline')">📅 Timeline Photos</button>
+    <button class="tab-btn" onclick="switchTab('gallery')">🖼️ Memory Gallery</button>
+    <button class="tab-btn" onclick="switchTab('deploy')">🚀 Deploy to Vercel</button>
+  </div>
+
+  <!-- ==================== TAB 1: TIMELINE ==================== -->
+  <div class="tab-panel active" id="tab-timeline">
+    <div class="section-label">Linked Timeline Slots — upload one image or video per moment</div>
+    <div class="timeline-slots" id="timeline-slots">
+      <!-- Slots are built by JS below -->
+    </div>
+  </div>
+
+  <!-- ==================== TAB 2: GALLERY ==================== -->
+  <div class="tab-panel" id="tab-gallery">
+    <div class="section-label">Extra Gallery Items — images & videos shown in the memory gallery</div>
+
+    <!-- Drop zone -->
+    <div class="drop-zone" id="drop-zone" onclick="document.getElementById('gallery-file-input').click()">
+      <div class="drop-icon">📸</div>
+      <div class="drop-text">Click or drag &amp; drop files here</div>
+      <div class="drop-sub">Supports JPG, PNG, GIF, WebP, MP4, MOV, WebM — multiple files at once</div>
+    </div>
+    <input type="file" id="gallery-file-input" accept="image/*,video/*" multiple />
+
+    <div class="gallery-preview-grid" id="gallery-preview-grid">
+      <!-- Items injected by JS -->
+    </div>
+  </div>
+
+  <!-- ==================== TAB 3: DEPLOY ==================== -->
+  <div class="tab-panel" id="tab-deploy">
+    <div class="section-label">Deploy to Vercel — make photos visible to everyone</div>
+
+    <div class="deploy-info">
+      <p>📌 <strong>Why this step?</strong> Files uploaded in the admin are saved to <em>this browser only</em>.
+      To make them visible to your girlfriend on Vercel, you need to put the actual files in your project
+      and generate a <code>media.json</code> config.</p>
+    </div>
+
+    <div class="deploy-steps">
+      <div class="deploy-step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Copy your image/video files</strong> into the <code>images/</code> folder inside your STAR project.
+          Name them anything you like (e.g. <code>met.jpg</code>, <code>date.mp4</code>).
+        </div>
+      </div>
+      <div class="deploy-step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Fill in the file paths below</strong> for each timeline slot and gallery item,
+          then click <em>Download media.json</em>.
+        </div>
+      </div>
+      <div class="deploy-step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Replace</strong> the <code>media.json</code> in your STAR folder with the downloaded one.
+        </div>
+      </div>
+      <div class="deploy-step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <strong>Push to GitHub</strong> and <strong>deploy on Vercel</strong> — everyone will see the photos! 🎉
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline file paths -->
+    <div class="section-label" style="margin-top:30px">Timeline Slots</div>
+    <div class="deploy-slots" id="deploy-slots"></div>
+
+    <!-- Gallery file paths -->
+    <div class="section-label" style="margin-top:30px">Gallery Items</div>
+    <div class="deploy-gallery" id="deploy-gallery"></div>
+    <button class="btn btn-ghost" style="margin-top:12px" onclick="addDeployGalleryRow()">
+      + Add gallery item
+    </button>
+
+    <div style="margin-top:30px;text-align:center">
+      <button class="btn btn-primary" style="padding:15px 40px;font-size:1.1rem" onclick="exportMediaJson()">
+        ⬇️ Download media.json
+      </button>
+    </div>
+  </div>
+</main>
+
+<div class="save-bar">
+  <div class="save-status saved" id="save-status">⚡ Changes auto-save instantly to IndexedDB — no size limit!</div>
+  <div style="display:flex;gap:10px;">
+    <button class="btn btn-danger" onclick="clearAll()">🗑️ Clear All Media</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ==========================================================================
+// INDEXEDDB SETUP  (no 5MB cap — uses actual disk space)
+// ==========================================================================
+const DB_NAME = 'birthday_app_db';
+const DB_VERSION = 1;
+let db;
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = (e) => {
+      const d = e.target.result;
+      if (!d.objectStoreNames.contains('timeline')) d.createObjectStore('timeline', { keyPath: 'key' });
+      if (!d.objectStoreNames.contains('gallery'))  d.createObjectStore('gallery',  { keyPath: 'id', autoIncrement: true });
+    };
+    req.onsuccess = (e) => resolve(e.target.result);
+    req.onerror   = (e) => reject(e.target.error);
+  });
+}
+
+function dbGet(store, key) {
+  return new Promise((resolve, reject) => {
+    const req = db.transaction(store, 'readonly').objectStore(store).get(key);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror   = () => reject(req.error);
+  });
+}
+function dbGetAll(store) {
+  return new Promise((resolve, reject) => {
+    const req = db.transaction(store, 'readonly').objectStore(store).getAll();
+    req.onsuccess = () => resolve(req.result);
+    req.onerror   = () => reject(req.error);
+  });
+}
+function dbPut(store, item) {
+  return new Promise((resolve, reject) => {
+    const req = db.transaction(store, 'readwrite').objectStore(store).put(item);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror   = () => reject(req.error);
+  });
+}
+function dbDelete(store, key) {
+  return new Promise((resolve, reject) => {
+    const req = db.transaction(store, 'readwrite').objectStore(store).delete(key);
+    req.onsuccess = () => resolve();
+    req.onerror   = () => reject(req.error);
+  });
+}
+function dbClear(store) {
+  return new Promise((resolve, reject) => {
+    const req = db.transaction(store, 'readwrite').objectStore(store).clear();
+    req.onsuccess = () => resolve();
+    req.onerror   = () => reject(req.error);
+  });
+}
+
+// ==========================================================================
+// TIMELINE SLOT DEFINITIONS
+// ==========================================================================
+const TIMELINE_SLOTS = [
+  { key: 'met',       name: 'The Day We Met',          desc: 'Timeline item 1 — The Beginning', icon: '💫' },
+  { key: 'firstdate', name: 'Our First Date',           desc: 'Timeline item 2 — The Spark',     icon: '☕' },
+  { key: 'concert',   name: 'Our First Praise Concert', desc: 'Timeline item 3 — Summer Magic',  icon: '🎶' },
+  { key: 'cozy',      name: 'Our Cozy Evenings',        desc: 'Timeline item 4 — Home Is You',   icon: '🏠' },
+];
+
+// In-memory gallery list (loaded from DB, reflects current edits)
+let galleryItems = []; // [{ id, blob, type, caption, name, objectURL }]
+
+// ==========================================================================
+// TABS
+// ==========================================================================
+function switchTab(tab) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ==========================================================================
+// TIMELINE
+// ==========================================================================
+async function renderTimeline() {
+  const container = document.getElementById('timeline-slots');
+  container.innerHTML = '';
+  for (const slot of TIMELINE_SLOTS) {
+    const item = await dbGet('timeline', slot.key);
+    let previewHTML = `<div class="slot-placeholder">${slot.icon}</div><div class="slot-placeholder-text">No media yet</div>`;
+    if (item) {
+      const url = URL.createObjectURL(item.blob);
+      previewHTML = item.type === 'video'
+        ? `<video src="${url}" muted loop autoplay playsinline></video>`
+        : `<img src="${url}" alt="${slot.name}" />`;
+    }
+    const card = document.createElement('div');
+    card.className = 'slot-card';
+    card.innerHTML = `
+      <div class="slot-preview" onclick="triggerSlotUpload('${slot.key}')">
+        ${previewHTML}
+        <div class="slot-overlay"><span>📁 ${item ? 'Replace' : 'Upload'}</span></div>
+      </div>
+      <div class="slot-info">
+        <div class="slot-name">${slot.name}</div>
+        <div class="slot-desc">${slot.desc}</div>
+        <div class="slot-actions">
+          <button class="btn btn-primary" onclick="triggerSlotUpload('${slot.key}')">${item ? '🔄 Replace' : '📁 Upload'}</button>
+          ${item ? `<button class="btn btn-danger" onclick="removeSlot('${slot.key}')">🗑️ Remove</button>` : ''}
+        </div>
+        <input type="file" id="file-${slot.key}" accept="image/*,video/*" onchange="handleSlotFile(event,'${slot.key}')" />
+        <div class="file-status" id="status-${slot.key}">${item ? '✅ ' + (item.name || 'File loaded') : ''}</div>
+      </div>`;
+    container.appendChild(card);
+  }
+}
+
+function triggerSlotUpload(key) { document.getElementById('file-' + key).click(); }
+
+async function handleSlotFile(event, key) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const statusEl = document.getElementById('status-' + key);
+  statusEl.className = 'file-status';
+  statusEl.textContent = '⏳ Saving…';
+  const isVideo = file.type.startsWith('video');
+  await dbPut('timeline', { key, blob: file, type: isVideo ? 'video' : 'image', name: file.name });
+  statusEl.textContent = '✅ ' + file.name;
+  showToast('✅ ' + file.name + ' saved!');
+  updateStorageBar();
+  renderTimeline();
+}
+
+async function removeSlot(key) {
+  await dbDelete('timeline', key);
+  showToast('🗑️ Removed.');
+  updateStorageBar();
+  renderTimeline();
+}
+
+// ==========================================================================
+// GALLERY
+// ==========================================================================
+async function renderGalleryPreview() {
+  galleryItems = await dbGetAll('gallery');
+  const grid = document.getElementById('gallery-preview-grid');
+  grid.innerHTML = '';
+  if (!galleryItems.length) {
+    grid.innerHTML = '<p style="color:var(--sub);font-size:0.9rem;grid-column:1/-1">No gallery items yet. Upload some above!</p>';
+    return;
+  }
+  galleryItems.forEach((item) => {
+    const url = URL.createObjectURL(item.blob);
+    const div = document.createElement('div');
+    div.className = 'gp-item';
+    div.innerHTML = `
+      ${item.type === 'video'
+        ? `<video src="${url}" muted loop autoplay playsinline></video>`
+        : `<img src="${url}" alt="${item.caption}" loading="lazy" />`}
+      <div class="gp-type-badge">${item.type === 'video' ? '🎬 Video' : '🖼️ Image'}</div>
+      <button class="gp-remove" onclick="removeGalleryItem(${item.id})" title="Remove">✕</button>
+      <div class="gp-item-info">
+        <input class="gp-caption-input" type="text" value="${item.caption}" placeholder="Add a caption…"
+          onchange="updateCaption(${item.id}, this.value)" />
+      </div>`;
+    grid.appendChild(div);
+  });
+}
+
+async function handleGalleryFiles(files) {
+  let count = 0;
+  for (const file of Array.from(files)) {
+    const isVideo = file.type.startsWith('video');
+    await dbPut('gallery', {
+      blob: file,
+      type: isVideo ? 'video' : 'image',
+      caption: file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' '),
+      name: file.name
+    });
+    count++;
+  }
+  showToast(`✅ ${count} file${count > 1 ? 's' : ''} saved!`);
+  updateStorageBar();
+  renderGalleryPreview();
+}
+
+async function removeGalleryItem(id) {
+  await dbDelete('gallery', id);
+  showToast('🗑️ Removed.');
+  updateStorageBar();
+  renderGalleryPreview();
+}
+
+async function updateCaption(id, caption) {
+  const item = await dbGet('gallery', id);
+  if (item) { item.caption = caption; await dbPut('gallery', item); }
+}
+
+// ---- Drag & Drop ----
+const dropZone = document.getElementById('drop-zone');
+const galleryInput = document.getElementById('gallery-file-input');
+galleryInput.addEventListener('change', (e) => handleGalleryFiles(e.target.files));
+dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('drag-over'); handleGalleryFiles(e.dataTransfer.files); });
+
+// ==========================================================================
+// CLEAR ALL
+// ==========================================================================
+async function clearAll() {
+  if (!confirm('⚠️ Delete ALL uploaded media? This cannot be undone.')) return;
+  await dbClear('timeline');
+  await dbClear('gallery');
+  showToast('🗑️ All media cleared.');
+  updateStorageBar();
+  renderTimeline();
+  renderGalleryPreview();
+}
+
+// ==========================================================================
+// STORAGE BAR  (uses StorageManager API — no 5MB limit shown)
+// ==========================================================================
+async function updateStorageBar() {
+  const el = document.getElementById('storage-info');
+  try {
+    if (navigator.storage && navigator.storage.estimate) {
+      const { usage, quota } = await navigator.storage.estimate();
+      const usedMB = (usage / 1024 / 1024).toFixed(1);
+      const quotaMB = (quota / 1024 / 1024 / 1024).toFixed(1);
+      const pct = Math.min((usage / quota) * 100, 100).toFixed(1);
+      el.innerHTML = `Storage used: ${usedMB} MB of ~${quotaMB} GB available (${pct}%)
+        <div class="storage-bar-wrap"><div class="storage-bar-fill" style="width:${pct}%;${pct > 80 ? 'background:var(--warning)' : ''}"></div></div>`;
+    } else {
+      el.textContent = 'IndexedDB active — no 5MB limit. Storage is limited only by your disk space.';
+    }
+  } catch { el.textContent = 'Storage info unavailable.'; }
+}
+
+// ==========================================================================
+// TOAST
+// ==========================================================================
+function showToast(msg, isError = false) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = 'toast' + (isError ? ' error' : '');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+// ==========================================================================
+// DEPLOY TAB — Generate media.json for Vercel
+// ==========================================================================
+const DEPLOY_SLOTS = [
+  { key: 'met',       name: 'The Day We Met' },
+  { key: 'firstdate', name: 'Our First Date' },
+  { key: 'concert',   name: 'Our First Praise Concert' },
+  { key: 'cozy',      name: 'Our Cozy Evenings' },
+];
+
+function renderDeployTab() {
+  // Timeline slots
+  const slotsEl = document.getElementById('deploy-slots');
+  slotsEl.innerHTML = '';
+  DEPLOY_SLOTS.forEach(slot => {
+    const row = document.createElement('div');
+    row.className = 'deploy-slot-row';
+    row.innerHTML = `
+      <div class="deploy-slot-label">${slot.name}</div>
+      <input class="deploy-path-input" type="text" id="dp-${slot.key}"
+        placeholder="images/filename.jpg" value="" />
+      <select class="deploy-type-select" id="dt-${slot.key}">
+        <option value="image">Image</option>
+        <option value="video">Video</option>
+      </select>`;
+    slotsEl.appendChild(row);
+  });
+
+  // Gallery rows — start with 3 blank rows
+  const galEl = document.getElementById('deploy-gallery');
+  galEl.innerHTML = '';
+  for (let i = 0; i < 3; i++) addDeployGalleryRow();
+}
+
+let deployGalCount = 0;
+function addDeployGalleryRow() {
+  const galEl = document.getElementById('deploy-gallery');
+  const id = ++deployGalCount;
+  const row = document.createElement('div');
+  row.className = 'deploy-gal-row';
+  row.id = 'dgal-' + id;
+  row.innerHTML = `
+    <input class="deploy-path-input" type="text" id="dg-src-${id}"
+      placeholder="images/photo.jpg" />
+    <select class="deploy-type-select" id="dg-type-${id}">
+      <option value="image">Image</option>
+      <option value="video">Video</option>
+    </select>
+    <input class="deploy-caption-input" type="text" id="dg-cap-${id}"
+      placeholder="Caption (optional)" />
+    <button class="btn btn-danger" style="padding:6px 12px"
+      onclick="document.getElementById('dgal-${id}').remove()">✕</button>`;
+  galEl.appendChild(row);
+}
+
+function exportMediaJson() {
+  const output = { timeline: {}, gallery: [] };
+
+  // Collect timeline
+  DEPLOY_SLOTS.forEach(slot => {
+    const src = document.getElementById('dp-' + slot.key).value.trim();
+    const type = document.getElementById('dt-' + slot.key).value;
+    if (src) output.timeline[slot.key] = { src, type };
+  });
+
+  // Collect gallery
+  document.querySelectorAll('.deploy-gal-row').forEach(row => {
+    const idSuffix = row.id.replace('dgal-', '');
+    const src  = document.getElementById('dg-src-'  + idSuffix).value.trim();
+    const type = document.getElementById('dg-type-' + idSuffix).value;
+    const cap  = document.getElementById('dg-cap-'  + idSuffix).value.trim();
+    if (src) output.gallery.push({ src, type, caption: cap || src.split('/').pop() });
+  });
+
+  // Download
+  const blob = new Blob([JSON.stringify(output, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'media.json';
+  a.click();
+  showToast('✅ media.json downloaded! Replace the one in your STAR folder.');
+}
+
+// ==========================================================================
+// INIT
+// ==========================================================================
+
+(async () => {
+  db = await openDB();
+  renderTimeline();
+  renderGalleryPreview();
+  renderDeployTab();
+  updateStorageBar();
+})();
+</script>
+</body>
+</html>
