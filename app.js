@@ -125,7 +125,7 @@ async function buildGallery() {
     div.className = 'gallery-item';
     div.setAttribute('onclick', `openGallery(${i})`);
     const mediaEl = item.type === 'video'
-      ? `<video src="${item._url}" muted loop autoplay playsinline style="width:100%;height:100%;object-fit:cover;"></video>`
+      ? `<video src="${item._url}" muted loop autoplay playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;"></video>`
       : `<img src="${item._url}" alt="${item.caption}" loading="lazy" />`;
     div.innerHTML = `${mediaEl}
       <div class="gallery-overlay"><span>View 🔍</span></div>`;
