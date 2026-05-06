@@ -1,4 +1,40 @@
 {
   "timeline": {},
-  "gallery": []
+  "gallery": [
+    {
+      "src": "images/1.MP4",
+      "type": "video",
+      "caption": "1.MP4"
+    },
+    {
+      "src": "images/2.MP4",
+      "type": "video",
+      "caption": "2.MP4"
+    },
+    {
+      "src": "images/3.MP4",
+      "type": "video",
+      "caption": "3.MP4"
+    },
+    {
+      "src": "images/B360B8EF-EFC0-45A8-8242-DDA48226B011.jpeg",
+      "type": "image",
+      "caption": "B360B8EF-EFC0-45A8-8242-DDA48226B011.jpeg"
+    },
+    {
+      "src": "images/IMG_8318.jpeg",
+      "type": "image",
+      "caption": "IMG_8318.jpeg"
+    },
+    {
+      "src": "images/IMG_8608.png",
+      "type": "image",
+      "caption": "IMG_8608.png"
+    },
+    {
+      "src": "images/IMG_8609.png",
+      "type": "image",
+      "caption": "IMG_8609.png"
+    }
+  ]
 }
